@@ -95,6 +95,7 @@ data "template_file" "nfs-cloudconfig" {
 
   vars = {
     vm_admin             = var.nfs_vm_admin
+    private_subnet_cidrs = []
     private_subnet_cidrs = join(" ", module.vpc.private_subnet_cidrs)
   }
 

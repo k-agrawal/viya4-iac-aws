@@ -8,7 +8,7 @@ locals {
   cluster_name              = "${var.prefix}-eks"
 
   # CIDRs
-  cluster_endpoint_private_access_cidrs = var.cluster_endpoint_private_access_cidrs == null ? distinct(concat(module.vpc.public_subnet_cidrs, module.vpc.private_subnet_cidrs)) : var.cluster_endpoint_private_access_cidrs
+  cluster_endpoint_private_access_cidrs = module.vpc.private_subnet_cidrs
 
   # Subnets
   jump_vm_subnet   = module.vpc.private_subnets[0]
