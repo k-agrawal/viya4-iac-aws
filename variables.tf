@@ -51,33 +51,9 @@ variable "iac_tooling" {
   default     = "terraform"
 }
 
-## Public Access
-variable "default_public_access_cidrs" {
-  description = "List of CIDRs to access created resources"
-  type        = list(string)
-  default     = null
-}
-
-variable "cluster_endpoint_public_access_cidrs" {
-  description = "List of CIDRs to access Kubernetes cluster - Public"
-  type        = list(string)
-  default     = null
-}
-
+## Private Access
 variable "cluster_endpoint_private_access_cidrs" {
   description = "List of CIDRs to access Kubernetes cluster - Private"
-  type        = list(string)
-  default     = null
-}
-
-variable "vm_public_access_cidrs" {
-  description = "List of CIDRs to access jump VM or NFS VM"
-  type        = list(string)
-  default     = null
-}
-
-variable "postgres_public_access_cidrs" {
-  description = "List of CIDRs to access PostgreSQL server"
   type        = list(string)
   default     = null
 }
@@ -85,7 +61,7 @@ variable "postgres_public_access_cidrs" {
 ## Provider Specific 
 variable "ssh_public_key" {
   description = "SSH public key used to access VMs"
-  default = "~/.ssh/id_rsa.pub"
+  default     = "~/.ssh/id_rsa.pub"
 }
 
 variable efs_performance_mode {
@@ -104,7 +80,7 @@ variable "tags" {
   default     = { project_name = "viya" }
 
   validation {
-    condition = length(var.tags) > 0
+    condition     = length(var.tags) > 0
     error_message = "ERROR: You must provide at last one tag."
   }
 }
@@ -156,7 +132,7 @@ variable "default_nodepool_taints" {
 }
 
 variable "default_nodepool_labels" {
-  type    = map
+  type = map
   default = {
     "kubernetes.azure.com/mode" = "system"
   }
@@ -210,7 +186,7 @@ variable node_pools {
       "node_labels" = {
         "workload.sas.com/class" = "cas"
       }
-      "custom_data" = ""
+      "custom_data"                          = ""
       "metadata_http_endpoint"               = "enabled"
       "metadata_http_tokens"                 = "required"
       "metadata_http_put_response_hop_limit" = 1
@@ -228,7 +204,7 @@ variable node_pools {
         "workload.sas.com/class"        = "compute"
         "launcher.sas.com/prepullImage" = "sas-programming-environment"
       }
-      "custom_data" = ""
+      "custom_data"                          = ""
       "metadata_http_endpoint"               = "enabled"
       "metadata_http_tokens"                 = "required"
       "metadata_http_put_response_hop_limit" = 1
@@ -245,7 +221,7 @@ variable node_pools {
       "node_labels" = {
         "workload.sas.com/class" = "stateless"
       }
-      "custom_data" = ""
+      "custom_data"                          = ""
       "metadata_http_endpoint"               = "enabled"
       "metadata_http_tokens"                 = "required"
       "metadata_http_put_response_hop_limit" = 1
@@ -262,7 +238,7 @@ variable node_pools {
       "node_labels" = {
         "workload.sas.com/class" = "stateful"
       }
-      "custom_data" = ""
+      "custom_data"                          = ""
       "metadata_http_endpoint"               = "enabled"
       "metadata_http_tokens"                 = "required"
       "metadata_http_put_response_hop_limit" = 1
@@ -272,84 +248,57 @@ variable node_pools {
 
 # Networking
 variable "vpc_id" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
   description = "Pre-exising VPC id. Leave blank to have one created"
 }
 
 variable "subnet_ids" {
-  type = map(list(string))
-  default     = {}
-  description = "Map subnet usage roles to list of existing subnet ids"
-  # Example:
-  # subnet_ids = {  # only needed if using pre-existing subnets
-  #   "public" : ["existing-public-subnet-id1", "existing-public-subnet-id2"],
-  #   "private" : ["existing-private-subnet-id1", "existing-private-subnet-id2"],
-  #   "database" : ["existing-database-subnet-id1", "existing-database-subnet-id2"] # only when 'create_postgres=true' 
-  # }
+  type        = list(string)
+  default     = []
+  description = "List of existing subnet ids"
 }
-
-variable "vpc_cidr" {
-  description = "VPC CIDR - NOTE: Subnets below must fall into this range"
-  default     = "192.168.0.0/16"
-}
-
-variable subnets {
-  type = map
-  description = "value"
-  default = {
-    "private" : ["192.168.0.0/18", "192.168.64.0/18"],
-    "public" : ["192.168.129.0/25", "192.168.129.128/25"],
-    "database" : ["192.168.128.0/25", "192.168.128.128/25"]
-    }
-} 
 
 variable "security_group_id" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
   description = "Pre-existing Security Group id. Leave blank to have one created"
-  
+
 }
 
 variable "cluster_security_group_id" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
   description = "Pre-existing Security Group id for the EKS Cluster. Leave blank to have one created"
 }
 
 variable "workers_security_group_id" {
-  type    = string
-  default = null
+  type        = string
+  default     = null
   description = "Pre-existing Security Group id for the Cluster Node VM. Leave blank to have one created"
 }
 
-variable "nat_id" {
-  type = string
-  default = null
-  description = "Pre-existing NAT Gateway id"
-}
-
 variable "cluster_iam_role_name" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "Pre-existing IAM Role for the EKS cluster"
 }
 
 variable "workers_iam_role_name" {
-  type = string
-  default = null
+  type        = string
+  default     = null
   description = "Pre-existing IAM Role for the Node VMs"
 }
 
 
 variable "create_jump_vm" {
   description = "Create bastion host VM"
-  default = true
+  default     = true
 }
 
 variable "create_jump_public_ip" {
   type    = bool
-  default = true
+  default = false
 }
 
 variable "jump_vm_admin" {
@@ -392,7 +341,7 @@ variable "nfs_vm_admin" {
 
 variable "nfs_vm_type" {
   description = "NFS VM type"
-  default    = "m5.4xlarge"
+  default     = "m5.4xlarge"
 }
 
 variable "os_disk_size" {
@@ -409,78 +358,6 @@ variable "os_disk_delete_on_termination" {
 
 variable "os_disk_iops" {
   default = 0
-}
-
-## PostgresSQL
-
-# Defaults
-variable "postgres_server_defaults" {
-  description = ""
-  type        = any
-  default = {
-    instance_type                = "db.m5.xlarge"
-    storage_size                 = 50
-    storage_encrypted            = false
-    backup_retention_days        = 7
-    multi_az                     = false
-    deletion_protection          = false
-    administrator_login          = "pgadmin"
-    administrator_password       = "my$up3rS3cretPassw0rd"
-    server_version               = "11"
-    server_port                  = "5432"
-    ssl_enforcement_enabled      = true
-    parameters                   = []
-    options                      = []
-  }
-}
-
-# User inputs
-variable "postgres_servers" {
-  description = "Map of PostgreSQL server objects"
-  type        = any
-  default     = null
-
-  # Checking for user provided "default" server
-  validation {
-    condition = var.postgres_servers != null ? length(var.postgres_servers) != 0 ? contains(keys(var.postgres_servers), "default") : false : true
-    error_message = "ERROR: The provided map of PostgreSQL server objects does not contain the required 'default' key."
-  }
-
-  # Checking server name
-  validation {
-    condition = var.postgres_servers != null ? length(var.postgres_servers) != 0 ? alltrue([
-      for k,v in var.postgres_servers : alltrue([
-        length(k) > 0,
-        length(k) < 61,
-        can(regex("^[a-zA-Z]+[a-zA-Z0-9-]*[a-zA-Z0-9]$", k)),
-      ])
-    ]) : false : true
-    error_message = "ERROR: The database server name must start with a letter, cannot end with a hyphen, must be between 1-60 characters in length, and can only contain hyphends, letters, and numbers."
-  }
-
-  # Checking user provided login
-  validation {
-    condition = var.postgres_servers != null ? length(var.postgres_servers) != 0 ? alltrue([
-      for k,v in var.postgres_servers : contains(keys(v),"administrator_login") ? alltrue([
-        v.administrator_login != "admin",
-        length(v.administrator_login) > 0,
-        length(v.administrator_login) < 17,
-        can(regex("^[a-zA-Z][a-zA-Z0-9_]+$", v.administrator_login)),
-       ]) : true
-    ]) : false : true
-    error_message = "ERROR: The admin login name can not be 'admin', must start with a letter, and must be between 1-16 characters in length, and can only contain underscores, letters, and numbers."
-  }
-
-  # Checking user provided password
-  validation {
-    condition = var.postgres_servers != null ? length(var.postgres_servers) != 0 ? alltrue([
-      for k,v in var.postgres_servers : contains(keys(v),"administrator_password") ? alltrue([
-        length(v.administrator_password) > 7,
-        can(regex("^[^/'\"@]+$", v.administrator_password)),
-      ]) : true 
-    ]) : false : true
-    error_message = "ERROR: The admin passsword must have more than 8 characters, and be composed of any printable characters except the following / ' \" @ characters."
-  }
 }
 
 variable "storage_type" {
@@ -502,7 +379,7 @@ variable "create_static_kubeconfig" {
 variable "cluster_api_mode" {
   description = "Use Public or Private IP address for the cluster API endpoint"
   type        = string
-  default     = "public"
+  default     = "private"
 
   validation {
     condition     = contains(["public", "private"], lower(var.cluster_api_mode))
@@ -511,9 +388,9 @@ variable "cluster_api_mode" {
 }
 
 variable "vpc_private_endpoints" {
-   description = "Endpoints needed for private cluster"
-   type        = list(string)
-   default     = [ "ec2", "ecr.api", "ecr.dkr", "s3", "logs", "sts", "elasticloadbalancing", "autoscaling" ]
+  description = "Endpoints needed for private cluster"
+  type        = list(string)
+  default     = ["ec2", "ecr.api", "ecr.dkr", "s3", "logs", "sts", "elasticloadbalancing", "autoscaling"]
 }
 
 variable "cluster_node_pool_mode" {
@@ -524,7 +401,7 @@ variable "cluster_node_pool_mode" {
 }
 
 variable "autoscaling_enabled" {
-    description = "Enable autoscaling for your AWS cluster."
-    type        = bool
-    default     = true
+  description = "Enable autoscaling for your AWS cluster."
+  type        = bool
+  default     = true
 }
